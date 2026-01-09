@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายงานการออกแบบฐานข้อมูลพนักงาน</title>
+    <style>
+        @media print {
+            .page-break { page-break-before: always; }
+            @page { margin: 2cm; }
+        }
+
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Sarabun', 'TH SarabunPSK', Arial, sans-serif;
+        line-height: 1.8;
+        color: #333;
+        max-width: 210mm;
+        margin: 0 auto;
+        padding: 20mm;
+        background: white;
+    }
+    
+    .cover {
+        text-align: center;
+        padding: 100px 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .cover h1 {
+        font-size: 32px;
+        margin-bottom: 30px;
+        color: #1a5490;
+        font-weight: bold;
+    }
+    
+    .cover h2 {
+        font-size: 28px;
+        margin: 20px 0;
+        color: #2c3e50;
+    }
+    
+    .cover .subject {
+        font-size: 20px;
+        margin: 40px 0;
+        color: #555;
+    }
+    
+    .cover .author {
+        font-size: 18px;
+        margin-top: 60px;
+        color: #666;
+    }
+    
+    h1 {
+        color: #1a5490;
+        font-size: 24px;
+        margin: 30px 0 20px 0;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #1a5490;
+    }
+    
+    h2 {
+        color: #2c3e50;
+        font-size: 20px;
+        margin: 25px 0 15px 0;
+    }
+    
+    h3 {
+        color: #34495e;
+        font-size: 18px;
+        margin: 20px 0 10px 0;
+    }
+    
+    p {
+        text-align: justify;
+        margin-bottom: 15px;
+        text-indent: 40px;
+    }
+    
+    ul, ol {
+        margin: 15px 0 15px 40px;
+    }
+    
+    li {
+        margin-bottom: 8px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 14px;
+    }
+    
+    th {
+        background-color: #1a5490;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-weight: bold;
+    }
+    
+    td {
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    
+    .entity-box {
+        border: 2px solid #1a5490;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        background-color: #f8f9fa;
+    }
+    
+    .entity-box h4 {
+        color: #1a5490;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+    
+    .attribute-list {
+        list-style: none;
+        margin-left: 0;
+    }
+    
+    .attribute-list li {
+        padding: 5px 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .attribute-list li:last-child {
+        border-bottom: none;
+    }
+    
+    .pk {
+        color: #e74c3c;
+        font-weight: bold;
+    }
+    
+    .fk {
+        color: #3498db;
+        font-weight: bold;
+    }
+    
+    .highlight {
+        background-color: #fff3cd;
+        padding: 15px;
+        border-left: 4px solid #ffc107;
+        margin: 15px 0;
+    }
+    
+    .note {
+        background-color: #e7f3ff;
+        padding: 15px;
+        border-left: 4px solid #2196F3;
+        margin: 15px 0;
+    }
+    
+    .erd-container {
+        background: white;
+        padding: 20px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        margin: 20px 0;
+        text-align: center;
+    }
+    
+    .entity {
+        display: inline-block;
+        border: 2px solid #1a5490;
+        border-radius: 8px;
+        margin: 10px;
+        padding: 0;
+        background: white;
+        min-width: 200px;
+    }
+    
+    .entity-header {
+        background: #1a5490;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+        border-radius: 6px 6px 0 0;
+    }
+    
+    .entity-body {
+        padding: 10px;
+        text-align: left;
+        font-size: 13px;
+    }
+    
+    .relationship {
+        margin: 20px 0;
+        padding: 15px;
+        background: #f0f7ff;
+        border-radius: 8px;
+        border-left: 4px solid #2196F3;
+    }
+    
+    .footer {
+        text-align: center;
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+        color: #666;
+        font-size: 14px;
+    }
+</style>
+```
+
+</head>
+<body>
+
+```
+<!-- หน้าปก -->
+<div class="cover">
+    <h1>รายงานการออกแบบฐานข้อมูล</h1>
+    <h2>ระบบฐานข้อมูลพนักงาน</h2>
+    <h2>(HR & Employee Database System)</h2>
+    
+    <div class="subject">
+        <p style="text-indent: 0;">รายวิชา Database Management (Design)</p>
+    </div>
+    
+    <div class="author">
+        <p style="text-indent: 0;">จัดทำโดย</p>
+        <p style="text-indent: 0;">[ชื่อ-นามสกุล]</p>
+        <p style="text-indent: 0;">[รหัสนักศึกษา]</p>
+        <br>
+        <p style="text-indent: 0;">ภาคเรียนที่ [X/XXXX]</p>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- บทที่ 1 -->
+<h1>บทที่ 1 บทนำ (Introduction)</h1>
+
+<h2>1.1 ที่มาและความสำคัญของระบบ</h2>
+
+<h3>ปัญหาของระบบเดิม</h3>
+<p>ในปัจจุบันองค์กรส่วนใหญ่ยังคงมีปัญหาในการจัดการข้อมูลพนักงาน โดยเฉพาะองค์กรขนาดกลางและขนาดเล็กที่ยังใช้การจัดเก็บข้อมูลด้วยเอกสารกระดาษหรือไฟล์ Microsoft Excel ซึ่งทำให้เกิดปัญหาหลายประการ ได้แก่ ข้อมูลกระจัดกระจายและไม่เป็นระบบ การค้นหาข้อมูลใช้เวลานาน ข้อมูลซ้ำซ้อนและไม่สอดคล้องกัน การบันทึกเวลาเข้า-ออกงานของพนักงานไม่เป็นระบบ ยากต่อการตรวจสอบและติดตามการมาทำงาน</p>
+
+<p>นอกจากนี้การคำนวณเงินเดือนและค่าล่วงเวลา (OT) ยังต้องทำด้วยตนเอง ซึ่งใช้เวลานานและมีโอกาสเกิดความผิดพลาดสูง รวมถึงการจัดทำรายงานต่างๆ ต้องรวบรวมข้อมูลจากหลายแหล่ง ทำให้ผู้บริหารไม่สามารถเข้าถึงข้อมูลที่ถูกต้องและทันเวลาในการตัดสินใจ ปัญหาเหล่านี้ส่งผลกระทบต่อประสิทธิภาพการทำงานของฝ่ายทรัพยากรบุคคลและความพึงพอใจของพนักงาน</p>
+
+<h3>เหตุผลที่ต้องออกแบบฐานข้อมูล</h3>
+<p>การออกแบบฐานข้อมูลสำหรับระบบทรัพยากรบุคคลจึงเป็นสิ่งจำเป็น เพื่อจัดเก็บข้อมูลพนักงานอย่างเป็นระบบและปลอดภัย ลดความซ้ำซ้อนของข้อมูลโดยเฉพาะข้อมูลแผนกและตำแหน่งงาน รองรับการประมวลผลเงินเดือนอัตโนมัติและแม่นยำ สามารถติดตามเวลาการทำงานและคำนวณค่าล่วงเวลาได้อย่างถูกต้อง รวมถึงสนับสนุนการวิเคราะห์ข้อมูลและการจัดทำรายงานเพื่อการตัดสินใจของผู้บริหาร</p>
+
+<h3>ความสำคัญของข้อมูลต่อการตัดสินใจ</h3>
+<p>ข้อมูลพนักงานมีความสำคัญต่อการดำเนินงานขององค์กรในหลายด้าน ผู้บริหารใช้ข้อมูลในการวางแผนกำลังคนและพัฒนาองค์กร ฝ่ายทรัพยากรบุคคลใช้ข้อมูลในการประเมินผลงานและวางแผนการปรับเงินเดือน ฝ่ายบัญชีใช้ข้อมูลในการจ่ายเงินเดือนและคำนวณภาษี ส่วนพนักงานสามารถตรวจสอบข้อมูลส่วนตัว เวลาการทำงาน และสลิปเงินเดือนของตนเองได้อย่างสะดวก ระบบฐานข้อมูลที่ดีจะช่วยให้ข้อมูลเหล่านี้มีความถูกต้อง ทันสมัย และเข้าถึงได้ง่าย</p>
+
+<h2>1.2 วัตถุประสงค์ของการออกแบบฐานข้อมูล</h2>
+<ol>
+    <li>เพื่อจัดเก็บข้อมูลพนักงานและโครงสร้างองค์กรอย่างเป็นระบบ</li>
+    <li>เพื่อลดความซ้ำซ้อนของข้อมูลแผนกและตำแหน่งงาน</li>
+    <li>เพื่อรองรับการบันทึกเวลาเข้า-ออกงานแบบ Real-time</li>
+    <li>เพื่อรองรับการคำนวณและประมวลผลเงินเดือนอัตโนมัติ</li>
+    <li>เพื่อสนับสนุนการวิเคราะห์ข้อมูลและการจัดทำรายงาน HR</li>
+</ol>
+
+<h2>1.3 ขอบเขตของระบบ</h2>
+
+<h3>ระบบทำ (Included)</h3>
+<ul>
+    <li>จัดเก็บข้อมูลพนักงาน แผนก และตำแหน่งงาน</li>
+    <li>บันทึกเวลาเข้า-ออกงานรายวัน (Attendance)</li>
+    <li>คำนวณเงินเดือน ค่าล่วงเวลา (OT) และรายได้</li>
+    <li>จัดทำรายงานสรุปการทำงานและเงินเดือน</li>
+    <li>รองรับการค้นหาและแสดงผลข้อมูลพนักงาน</li>
+</ul>
+
+<h3>ระบบไม่ทำ (Excluded)</h3>
+<ul>
+    <li>การจัดการใบลา ใบลาป่วย (Leave Management) - อาจขยายในอนาคต</li>
+    <li>ระบบประเมินผลงาน (Performance Appraisal)</li>
+    <li>การจัดการสวัสดิการและประกันสังคม</li>
+    <li>ระบบสรรหาและคัดเลือกพนักงาน (Recruitment)</li>
+    <li>ระบบอบรมและพัฒนาบุคลากร (Training)</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- บทที่ 2 -->
+<h1>บทที่ 2 การวิเคราะห์ความต้องการของระบบ (Requirement Analysis)</h1>
+
+<h2>2.1 ผู้ใช้งานระบบ (System Users)</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>กลุ่มผู้ใช้</th>
+            <th>บทบาท</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>HR Admin</strong></td>
+            <td>จัดการข้อมูลพนักงาน แผนก ตำแหน่ง อนุมัติข้อมูล จัดการสิทธิ์การใช้งาน</td>
+        </tr>
+        <tr>
+            <td><strong>HR Staff</strong></td>
+            <td>บันทึกข้อมูลเวลาทำงาน ประมวลผลเงินเดือน จัดทำรายงาน</td>
+        </tr>
+        <tr>
+            <td><strong>Manager</strong></td>
+            <td>ดูรายงานพนักงานในแผนก วิเคราะห์การทำงาน อนุมัติ OT</td>
+        </tr>
+        <tr>
+            <td><strong>Accountant</strong></td>
+            <td>ตรวจสอบและอนุมัติการจ่ายเงินเดือน ดูรายงานค่าใช้จ่ายบุคลากร</td>
+        </tr>
+        <tr>
+            <td><strong>Employee</strong></td>
+            <td>ตรวจสอบข้อมูลส่วนตัว เวลาทำงาน ดาวน์โหลดสลิปเงินเดือน</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>2.2 ความต้องการด้านข้อมูล (Data Requirements)</h2>
+
+<h3>ข้อมูลหลัก (Master Data)</h3>
+<ul>
+    <li><strong>ข้อมูลพนักงาน:</strong> รหัสพนักงาน ชื่อ-นามสกุล วันเกิด เพศ ที่อยู่ เบอร์โทร อีเมล วันที่เริ่มงาน สถานะการทำงาน</li>
+    <li><strong>ข้อมูลแผนก:</strong> รหัสแผนก ชื่อแผนก ผู้จัดการแผนก สถานที่ตั้ง เบอร์ต่อภายใน</li>
+    <li><strong>ข้อมูลตำแหน่ง:</strong> รหัสตำแหน่ง ชื่อตำแหน่ง เงินเดือนขั้นต่ำ-สูงสุด รายละเอียดงาน</li>
+</ul>
+
+<h3>ข้อมูลธุรกรรม (Transaction Data)</h3>
+<ul>
+    <li><strong>บันทึกเวลาเข้า-ออกงาน:</strong> วันที่ เวลาเข้า เวลาออก ชั่วโมงทำงาน ชั่วโมง OT สถานะ (มา/สาย/ขาด) หมายเหตุ</li>
+    <li><strong>ข้อมูลเงินเดือน:</strong> เดือน/ปี เงินเดือนพื้นฐาน ค่า OT โบนัส รายการหัก (ประกันสังคม ภาษี) เงินเดือนสุทธิ วันที่จ่าย สถานะ</li>
+</ul>
+
+<h3>ข้อมูลรายงาน (Reporting Data)</h3>
+<ul>
+    <li>รายงานสรุปเวลาทำงานรายเดือน</li>
+    <li>รายงานเงินเดือนแยกตามแผนก/ตำแหน่ง</li>
+    <li>รายงานพนักงานขาดงาน/มาสาย</li>
+    <li>Dashboard จำนวนพนักงานแยกตามแผนก/ตำแหน่ง</li>
+    <li>รายงานค่าใช้จ่ายบุคลากรรายเดือน</li>
+</ul>
+
+<h2>2.3 Business Rules</h2>
+
+<div class="highlight">
+    <strong>กฎที่ 1: พนักงานสังกัดได้ 1 แผนก</strong>
+    <p style="text-indent: 0; margin-top: 10px;">พนักงานหนึ่งคนทำงานในแผนกเดียว (ณ เวลาหนึ่ง) แต่แผนกหนึ่งสามารถมีพนักงานได้หลายคน</p>
+    <p style="text-indent: 0;"><em>Relationship: Employee ↔ Department (M:1)</em></p>
+</div>
+
+<div class="highlight">
+    <strong>กฎที่ 2: พนักงานดำรงตำแหน่งได้ 1 ตำแหน่ง</strong>
+    <p style="text-indent: 0; margin-top: 10px;">พนักงานหนึ่งคนมีตำแหน่งเดียว (ณ เวลาหนึ่ง) แต่ตำแหน่งหนึ่งสามารถมีพนักงานหลายคนได้</p>
+    <p style="text-indent: 0;"><em>Relationship: Employee ↔ Position (M:1)</em></p>
+</div>
+
+<div class="highlight">
+    <strong>กฎที่ 3: บันทึกเวลาทำงานรายวัน</strong>
+    <p style="text-indent: 0; margin-top: 10px;">พนักงานหนึ่งคนมีการบันทึกเวลาทำงานได้หลายวัน และการบันทึกแต่ละครั้งเป็นของพนักงานคนเดียว</p>
+    <ul style="margin-top: 10px;">
+        <li>ต้องบันทึกเวลาเข้าและเวลาออก</li>
+        <li>คำนวณชั่วโมงทำงาน = เวลาออก - เวลาเข้า</li>
+        <li>ถ้าทำงานเกิน 8 ชั่วโมง/วัน คำนวณเป็น OT</li>
+    </ul>
+    <p style="text-indent: 0;"><em>Relationship: Employee ↔ Attendance (1:M)</em></p>
+</div>
+
+<div class="highlight">
+    <strong>กฎที่ 4: เงินเดือนขึ้นกับตำแหน่ง</strong>
+    <p style="text-indent: 0; margin-top: 10px;">เงินเดือนพื้นฐานอ้างอิงจากตำแหน่งที่ดำรง พนักงานแต่ละคนมีประวัติเงินเดือนหลายเดือน</p>
+    <ul style="margin-top: 10px;">
+        <li>เงินเดือนรวม = เงินเดือนพื้นฐาน + ค่า OT + โบนัส - หัก</li>
+        <li>ค่า OT = ชั่วโมง OT × อัตราต่อชั่วโมง (1.5 เท่าของอัตราปกติ)</li>
+    </ul>
+    <p style="text-indent: 0;"><em>Relationship: Employee ↔ Salary (1:M)</em></p>
+</div>
+
+<h3>กฎเพิ่มเติม</h3>
+<ul>
+    <li>แผนกต้องมีหัวหน้าแผนก (ผู้จัดการ) 1 คน</li>
+    <li>รหัสพนักงานต้องไม่ซ้ำกัน (Unique)</li>
+    <li>วันที่เริ่มงานต้องไม่เป็นอนาคต</li>
+    <li>เวลาออกงานต้องมากกว่าเวลาเข้างาน</li>
+    <li>เงินเดือนพนักงานต้องอยู่ในช่วงที่กำหนดของตำแหน่ง</li>
+</ul>
+
+<h2>2.4 ขั้นตอนการดำเนินงานของระบบ</h2>
+
+<p>ระบบฐานข้อมูลพนักงานเริ่มต้นจากการที่ HR Admin ทำการบันทึกข้อมูลหลักขององค์กร ได้แก่ ข้อมูลแผนกต่างๆ และตำแหน่งงาน พร้อมกำหนดโครงสร้างเงินเดือนของแต่ละตำแหน่ง จากนั้น HR Staff จะทำการบันทึกข้อมูลพนักงานใหม่เข้าสู่ระบบ โดยระบุแผนกและตำแหน่งที่สังกัด</p>
+
+<p>ในแต่ละวัน พนักงานหรือระบบ Time Attendance จะบันทึกเวลาเข้า-ออกงาน ระบบจะคำนวณชั่วโมงการทำงานและชั่วโมง OT โดยอัตโนมัติ โดยถ้าพนักงานทำงานเกิน 8 ชั่วโมงต่อวัน ระบบจะคำนวณชั่วโมงที่เกินเป็นชั่วโมง OT และบันทึกไว้สำหรับการคำนวณค่าตอบแทน</p>
+
+<p>เมื่อสิ้นเดือน HR Staff จะทำการประมวลผลเงินเดือน โดยระบบจะดึงข้อมูลเวลาทำงานทั้งเดือนของพนักงานแต่ละคนมาคำนวณค่า OT รวมกับเงินเดือนพื้นฐานตามตำแหน่ง บวกโบนัส (ถ้ามี) และหักรายการต่างๆ เช่น ประกันสังคม ภาษี เพื่อสร้างสลิปเงินเดือน ระบบจะบันทึกข้อมูลเงินเดือนลงในฐานข้อมูลพร้อมสถานะการจ่าย</p>
+
+<p>ผู้จัดการสามารถเข้าดูรายงานสรุปการทำงานของพนักงานในแผนก เพื่อใช้ในการประเมินผลงานและวางแผนกำลังคน ส่วนฝ่ายบัญชีจะใช้ข้อมูลเงินเดือนในการจ่ายเงินผ่านระบบธนาคารและคำนวณภาษีเงินได้บุคคลธรรมดา พนักงานสามารถเข้าตรวจสอบข้อมูลส่วนตัว บันทึกเวลาทำงาน และดาวน์โหลดสลิปเงินเดือนของตนเองได้ตลอดเวลา</p>
+
+<h2>2.5 ตารางสรุปขั้นตอนการดำเนินงาน (Process-Input-Output Matrix)</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ขั้นตอน</th>
+            <th>Input</th>
+            <th>Process</th>
+            <th>Output</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>จัดการข้อมูลหลัก</strong></td>
+            <td>ข้อมูลแผนก, ตำแหน่ง, โครงสร้างเงินเดือน</td>
+            <td>ตรวจสอบและบันทึกลง Department, Position</td>
+            <td>ข้อมูลหลักใน DB</td>
+        </tr>
+        <tr>
+            <td><strong>บันทึกเวลาทำงาน</strong></td>
+            <td>รหัสพนักงาน, วันที่, เวลาเข้า, เวลาออก</td>
+            <td>คำนวณชั่วโมงทำงาน, ชั่วโมง OT บันทึก Attendance</td>
+            <td>บันทึกเวลาใน DB</td>
+        </tr>
+        <tr>
+            <td><strong>ประมวลผลเงินเดือน</strong></td>
+            <td>รหัสพนักงาน, เดือน/ปี, ข้อมูล Attendance</td>
+            <td>คำนวณ: เงินเดือนพื้นฐาน + OT + โบนัส - หัก บันทึก Salary</td>
+            <td>สลิปเงินเดือน, รายงานเงินเดือน</td>
+        </tr>
+        <tr>
+            <td><strong>สรุปรายงาน</strong></td>
+            <td>เดือน, แผนก, ตำแหน่ง</td>
+            <td>Query/Aggregate ข้อมูลจาก Employee, Attendance, Salary JOIN กับ Department, Position</td>
+            <td>รายงานสรุป, Dashboard</td>
+        </tr>
+        <tr>
+            <td><strong>ตรวจสอบข้อมูลพนักงาน</strong></td>
+            <td>รหัสพนักงาน</td>
+            <td>Query ข้อมูลจาก Employee, Attendance, Salary</td>
+            <td>ประวัติพนักงาน, เวลาทำงาน, สลิป</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>การเชื่อมโยงกับการออกแบบฐานข้อมูล:</strong>
+    <ul style="margin-top: 10px;">
+        <li><strong>ขั้นตอนจัดการข้อมูลหลัก:</strong> ใช้ Entity Department และ Position โดยมี PK คือ DepartmentID และ PositionID ออกแบบแยก Entity เพื่อลดความซ้ำซ้อนและสามารถอ้างอิงได้หลายครั้ง</li>
+        <li><strong>ขั้นตอนบันทึกพนักงาน:</strong> ใช้ Entity Employee มี PK คือ EmployeeID และ FK คือ DepartmentID และ PositionID เพื่อรองรับ Business Rule "พนักงานสังกัด 1 แผนก และมี 1 ตำแหน่ง"</li>
+        <li><strong>ขั้นตอนบันทึกเวลาทำงาน:</strong> ใช้ Entity Attendance มี PK คือ AttendanceID และ FK คือ EmployeeID เพื่อบันทึกเวลาทำงานรายวัน (1:M relation)</li>
+        <li><strong>ขั้นตอนประมวลผลเงินเดือน:</strong> ใช้ Entity Salary, Attendance และ Position โดย Salary มี FK คือ EmployeeID ดึงข้อมูล BaseSalary จาก Position และ OT Hours จาก Attendance เพื่อรองรับ Business Rule "เงินเดือนขึ้นกับตำแหน่ง"</li>
+    </ul>
+</div>
+
+<div class="page-break"></div>
+
+<!-- บทที่ 3 -->
+<h1>บทที่ 3 การออกแบบเชิงแนวคิด (Conceptual Design)</h1>
+
+<h2>3.1 การระบุเอนทิตี (Entity Identification)</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Entity</th>
+            <th>คำอธิบาย</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Employee</strong></td>
+            <td>ข้อมูลพนักงานในองค์กร เก็บข้อมูลส่วนตัวและข้อมูลการทำงาน</td>
+        </tr>
+        <tr>
+            <td><strong>Department</strong></td>
+            <td>ข้อมูลแผนก/ฝ่ายต่างๆ ในองค์กร</td>
+        </tr>
+        <tr>
+            <td><strong>Position</strong></td>
+            <td>ข้อมูลตำแหน่งงานและโครงสร้างเงินเดือน</td>
+        </tr>
+        <tr>
+            <td><strong>Attendance</strong></td>
+            <td>บันทึกเวลาเข้า-ออกงานรายวันของพนักงาน</td>
+        </tr>
+        <tr>
+            <td><strong>Salary</strong></td>
+            <td>ข้อมูลเงินเดือนรายเดือนของพนักงาน</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>3.2 คุณลักษณะของเอนทิตี (Attributes)</h2>
+
+<div class="entity-box">
+    <h4>Employee (พนักงาน)</h4>
+    <ul class="attribute-list">
+        <li><span class="pk">EmployeeID</span> - รหัสพนักงาน (Primary Key)</li>
+        <li>FirstName - ชื่อ</li>
+        <li>LastName - นามสกุล</li>
+        <li>DateOfBirth - วันเกิด</li>
+        <li>Gender - เพศ</li>
+        <li>Phone - เบอร์โทรศัพท์</li>
+        <li>Email - อีเมล</li>
+        <li>Address - ที่อยู่</li>
+        <li>HireDate - วันที่เริ่มงาน</li>
+        <li><span class="fk">DepartmentID</span> - รหัสแผนก (Foreign Key)</li>
+        <li><span class="fk">PositionID</span> - รหัสตำแหน่ง (Foreign Key)</li>
+        <li>Status - สถานะ (Active/Inactive/Resigned)</li>
+    </ul>
+</div>
+
+<div class="entity-box">
+    <h4>Department (แผนก)</h4>
+    <ul class="attribute-list">
+        <li><span class="pk">DepartmentID</span> - รหัสแผนก (Primary Key)</li>
+        <li>DepartmentName - ชื่อแผนก</li>
+        <li><span class="fk">ManagerID</span> - รหัสผู้จัดการแผนก (Foreign Key → Employee)</li>
+        <li>Location - สถานที่ตั้ง</li>
+        <li>PhoneExt - เบอร์ต่อภายใน</li>
+    </ul>
+</div>
+
+<div class="entity-box">
+    <h4>Position (ตำแหน่ง)</h4>
+    <ul class="attribute-list">
+        <li><span class="pk">PositionID</span> - รหัสตำแหน่ง (Primary Key)</li>
+        <li>PositionTitle - ชื่อตำแหน่ง</li>
+        <li>MinSalary - เงินเดือนขั้นต่ำ</li>
+        <li>MaxSalary - เงินเดือนสูงสุด</li>
+        <li>Description - รายละเอียดหน้าที่งาน</li>
+    </ul>
+</div>
+
+<div class="entity-box">
+    <h4>Attendance (การเข้างาน)</h4>
+    <ul class="attribute-list">
+        <li><span class="pk">AttendanceID</span> - รหัสบันทึก (Primary Key)</li>
+        <li><span class="fk">EmployeeID</span> - รหัสพนักงาน (Foreign Key)</li>
+        <li>Date - วันที่</li>
+        <li>TimeIn - เวลาเข้างาน</li>
+        <li>TimeOut - เวลาออกงาน</li>
+        <li>WorkHours - ชั่วโมงทำงาน (คำนวณ)</li>
+        <li>OTHours - ชั่วโมง OT (คำนวณ)</li>
+        <li>Status - สถานะ (Present/Late/Absent)</li>
+        <li>Remarks - หมายเหตุ</li>
+    </ul>
+</div>
+
+<div class="entity-box">
+    <h4>Salary (เงินเดือน)</h4>
+    <ul class="attribute-list">
+        <li><span class="pk">SalaryID</span> - รหัสเงินเดือน (Primary Key)</li>
+        <li><span class="fk">EmployeeID</span> - รหัสพนักงาน (Foreign Key)</li>
+        <li>Month - เดือน</li>
+        <li>Year - ปี</li>
+        <li>BaseSalary - เงินเดือนพื้นฐาน</li>
+        <li>OTPay - ค่าล่วงเวลา</li>
+        <li>Bonus - โบนัส</li>
+        <li>Deductions - รายการหัก (ประกันสังคม, ภาษี)</li>
+        <li>NetSalary - เงินเดือนสุทธิ</li>
+        <li>PaymentDate - วันที่จ่าย</li>
+        <li>Status - สถานะ (Pending/Paid)</li>
+    </ul>
+</div>
+
+<h2>3.3 ความสัมพันธ์ระหว่างเอนทิตี (Relationships)</h2>
+
+<div class="relationship">
+    <strong>1. Employee - Department (M:1)</strong>
+    <p style="text-indent: 0; margin: 10px 0 0 0;"><strong>คำอธิบาย:</strong> พนักงานหลายคนสังกัดแผนกเดียว / แผนกหนึ่งมีพนักงานได้หลายคน</p>
+    <p style="text-indent: 0;"><strong>Cardinality:</strong> Many-to-One</p>
+    <p style="text-indent: 0;"><strong>Participation:</strong> Total (พนักงานต้องมีแผนก)</p>
+</div>
+
+<div class="relationship">
+    <strong>2. Employee - Position (M:1)</strong>
+    <p style="text-indent: 0; margin: 10px 0 0 0;"><strong>คำอธิบาย:</strong> พนักงานหลายคนมีตำแหน่งเดียวกัน / ตำแหน่งหนึ่งมีพนักงานได้หลายคน</p>
+    <p style="text-indent: 0;"><strong>Cardinality:</strong> Many-to-One</p>
+    <p style="text-indent: 0;"><strong>Participation:</strong> Total (พนักงานต้องมีตำแหน่ง)</p>
+</div>
+
+<div class="relationship">
+    <strong>3. Employee - Attendance (1:M)</strong>
+    <p style="text-indent: 0; margin: 10px 0 0 0;"><strong>คำอธิบาย:</strong> พนักงานหนึ่งคนมีบันทึกเวลาได้หลายวัน / บันทึกแต่ละครั้งเป็นของพนักงานคนเดียว</p>
+    <p style="text-indent: 0;"><strong>Cardinality:</strong> One-to-Many</p>
+    <p style="text-indent: 0;"><strong>Participation:</strong> Partial (ไม่จำเป็นต้องมีทันที)</p>
+</div>
+
+<div class="relationship">
+    <strong>4. Employee - Salary (1:M)</strong>
+    <p style="text-indent: 0; margin: 10px 0 0 0;"><strong>คำอธิบาย:</strong> พนักงานหนึ่งคนมีเงินเดือนได้หลายเดือน / เงินเดือนแต่ละรายการเป็นของพนักงานคนเดียว</p>
+    <p style="text-indent: 0;"><strong>Cardinality:</strong> One-to-Many</p>
+    <p style="text-indent: 0;"><strong>Participation:</strong> Partial (พนักงานใหม่อาจยังไม่มีเงินเดือน)</p>
+</div>
+
+<div class="relationship">
+    <strong>5. Department - Employee (Manager) (1:1)</strong>
+    <p style="text-indent: 0; margin: 10px 0 0 0;"><strong>คำอธิบาย:</strong> แผนกหนึ่งมีผู้จัดการ 1 คน / ผู้จัดการ 1 คนดูแล 1 แผนก</p>
+    <p style="text-indent: 0;"><strong>Cardinality:</strong> One-to-One</p>
+    <p style="text-indent: 0;"><strong>Participation:</strong> Partial (แผนกอาจยังไม่มีผู้จัดการ)</p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>3.4 แผนภาพ ER Diagram (ERD)</h2>
+
+<div class="erd-container">
+    <h3 style="margin-bottom: 20px;">Entity-Relationship Diagram</h3>
+    
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin: 30px 0;">
+        
+        <!-- Department Entity -->
+        <div class="entity">
+            <div class="entity-header">Department</div>
+            <div class="entity-body">
+                <div style="color: #e74c3c; font-weight: bold;">PK: DepartmentID</div>
+                <div>DepartmentName</div>
+                <div>Location</div>
+                <div>PhoneExt</div>
+                <div style="color: #3498db; font-weight: bold;">FK: ManagerID</div>
+            </div>
+        </div>
+
+        <!-- Position Entity -->
+        <div class="entity">
+            <div class="entity-header">Position</div>
+            <div class="entity-body">
+                <div style="color: #e74c3c; font-weight: bold;">PK: PositionID</div>
+                <div>PositionTitle</div>
+                <div>MinSalary</div>
+                <div>MaxSalary</div>
+                <div>Description</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Arrow Down -->
+    <div style="font-size: 24px; margin: 10px 0;">↓ M:1 ↓</div>
+
+    <!-- Employee Entity (Center) -->
+    <div style="margin: 20px 0;">
+        <div class="entity">
+            <div class="entity-header">Employee</div>
+            <div class="entity-body">
+                <div style="color: #e74c3c; font-weight: bold;">PK: EmployeeID</div>
+                <div>FirstName, LastName</div>
+                <div>DateOfBirth, Gender</div>
+                <div>Phone, Email, Address</div>
+                <div>HireDate, Status</div>
+                <div style="color: #3498db; font-weight: bold;">FK: DepartmentID</div>
+                <div style="color: #3498db; font-weight: bold;">FK: PositionID</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Arrow Down -->
+    <div style="font-size: 24px; margin: 10px 0;">↓ 1:M ↓</div>
+
+    <!-- Transaction Entities -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin: 30px 0;">
+        
+        <!-- Attendance Entity -->
+        <div class="entity">
+            <div class="entity-header">Attendance</div>
+            <div class="entity-body">
+                <div style="color: #e74c3c; font-weight: bold;">PK: AttendanceID</div>
+                <div style="color: #3498db; font-weight: bold;">FK: EmployeeID</div>
+                <div>Date</div>
+                <div>TimeIn, TimeOut</div>
+                <div>WorkHours</div>
+                <div>OTHours</div>
+                <div>Status, Remarks</div>
+            </div>
+        </div>
+
+        <!-- Salary Entity -->
+        <div class="entity">
+            <div class="entity-header">Salary</div>
+            <div class="entity-body">
+                <div style="color: #e74c3c; font-weight: bold;">PK: SalaryID</div>
+                <div style="color: #3498db; font-weight: bold;">FK: EmployeeID</div>
+                <div>Month, Year</div>
+                <div>BaseSalary</div>
+                <div>OTPay, Bonus</div>
+                <div>Deductions</div>
+                <div>NetSalary</div>
+                <div>PaymentDate, Status</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>คำอธิบาย Cardinality และ Participation</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>ความสัมพันธ์</th>
+            <th>Cardinality</th>
+            <th>Participation</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Employee → Department</td>
+            <td>Many-to-One (M:1)</td>
+            <td>Total (พนักงานทุกคนต้องสังกัดแผนก)</td>
+        </tr>
+        <tr>
+            <td>Employee → Position</td>
+            <td>Many-to-One (M:1)</td>
+            <td>Total (พนักงานทุกคนต้องมีตำแหน่ง)</td>
+        </tr>
+        <tr>
+            <td>Employee → Attendance</td>
+            <td>One-to-Many (1:M)</td>
+            <td>Partial (พนักงานอาจยังไม่มีบันทึกเวลา)</td>
+        </tr>
+        <tr>
+            <td>Employee → Salary</td>
+            <td>One-to-Many (1:M)</td>
+            <td>Partial (พนักงานใหม่อาจยังไม่มีเงินเดือน)</td>
+        </tr>
+        <tr>
+            <td>Department → Employee (Manager)</td>
+            <td>One-to-One (1:1)</td>
+            <td>Partial (แผนกอาจยังไม่มีผู้จัดการ)</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>หมายเหตุ:</strong>
+    <ul style="margin-top: 10px;">
+        <li><strong>PK (Primary Key)</strong> คือ คีย์หลักที่ใช้ระบุแต่ละแถวในตารางให้ไม่ซ้ำกัน</li>
+        <li><strong>FK (Foreign Key)</strong> คือ คีย์ต่างประเทศที่ใช้อ้างอิงไปยัง PK ของตารางอื่น</li>
+        <li><strong>Total Participation</strong> หมายถึง ทุก record ต้องมีความสัมพันธ์</li>
+        <li><strong>Partial Participation</strong> หมายถึง record บางตัวอาจไม่มีความสัมพันธ์ก็ได้</li>
+    </ul>
+</div>
+
+<div class="page-break"></div>
+
+<!-- สรุป -->
+<h1>สรุป</h1>
+
+<p>ระบบฐานข้อมูลพนักงาน (HR & Employee Database System) ที่ออกแบบนี้มีวัตถุประสงค์เพื่อแก้ไขปัญหาการจัดการข้อมูลพนักงานที่ไม่เป็นระบบ โดยการออกแบบฐานข้อมูลที่มีโครงสร้างชัดเจน ประกอบด้วย 5 เอนทิตีหลัก ได้แก่ Employee, Department, Position, Attendance และ Salary</p>
+
+<p>การออกแบบนี้ปฏิบัติตาม Business Rules ที่กำหนด โดยพนักงานสังกัดแผนกเดียวและมีตำแหน่งเดียว มีการบันทึกเวลาทำงานรายวันพร้อมคำนวณชั่วโมง OT อัตโนมัติ และมีการคำนวณเงินเดือนที่อิงจากตำแหน่ง ความสัมพันธ์ระหว่างเอนทิตีถูกออกแบบให้ลดความซ้ำซ้อนของข้อมูล และรองรับการประมวลผลที่มีประสิทธิภาพ</p>
+
+<p>ระบบนี้สามารถรองรับผู้ใช้งานหลายกลุ่ม ตั้งแต่ HR Admin, HR Staff, ผู้จัดการ ฝ่ายบัญชี ไปจนถึงพนักงานทั่วไป โดยแต่ละกลุ่มสามารถเข้าถึงข้อมูลที่เกี่ยวข้องกับบทบาทของตนได้อย่างเหมาะสม นอกจากนี้ยังสามารถสร้างรายงานและวิเคราะห์ข้อมูลเพื่อสนับสนุนการตัดสินใจของผู้บริหาร</p>
+
+<p>การออกแบบนี้เป็นพื้นฐานสำคัญในการพัฒนาระบบ HR ที่สมบูรณ์ และสามารถขยายเพิ่มเติมฟังก์ชันอื่นๆ ในอนาคต เช่น ระบบจัดการใบลา ระบบประเมินผลงาน หรือระบบสรรหาพนักงาน เพื่อให้เป็นระบบบริหารทรัพยากรบุคคลแบบครบวงจร</p>
+
+<div class="footer">
+    <p>--- จบรายงาน ---</p>
+    <p style="margin-top: 10px;">รายงานการออกแบบฐานข้อมูลพนักงาน (HR & Employee Database System)</p>
+    <p>Database Management (Design)</p>
+</div>
+```
+
+</body>
+</html>บันทึกพนักงานใหม่</strong></td>
+                <td>ข้อมูลส่วนตัว, แผนกที่สังกัด, ตำแหน่ง</td>
+                <td>บันทึก Employee เชื่อมโยง DepartmentID, PositionID (FK)</td>
+                <td>รหัสพนักงาน, ข้อมูลในระบบ</td>
+            </tr>
+            <tr>
+                <td><strong>
