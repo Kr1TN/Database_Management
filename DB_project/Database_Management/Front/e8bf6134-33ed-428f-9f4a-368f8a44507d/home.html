@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ข้อมูลส่วนตัวพนักงาน</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #1e293b; margin: 0; padding: 0; }
+        .navbar { background: #0f172a; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logout-link { color: #cbd5e1; text-decoration: none; font-size: 14px; cursor: pointer; }
+        .logout-link:hover { color: #ffffff; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        .card { background: #ffffff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 1.5rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+        .section-title { font-size: 16px; font-weight: 600; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; margin-bottom: 1rem; margin-top: 0; }
+        .info-box { background: #f8fafc; padding: 1rem; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; }
+        .info-label { font-size: 12px; color: #64748b; margin-bottom: 4px; }
+        .info-value { font-size: 15px; font-weight: 600; color: #0f172a; }
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .data-table th, .data-table td { padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-size: 14px; }
+        .data-table td:last-child { text-align: right; font-weight: 500; }
+        .header-green { background-color: #dcfce7; color: #166534; padding: 8px; border-radius: 4px; text-align: center; font-weight: 600; font-size: 14px; margin-bottom: 0.5rem; }
+        .header-red { background-color: #fee2e2; color: #991b1b; padding: 8px; border-radius: 4px; text-align: center; font-weight: 600; font-size: 14px; margin-bottom: 0.5rem; }
+        .header-blue { background-color: #e0f2fe; color: #075985; padding: 8px; border-radius: 4px; text-align: center; font-weight: 600; font-size: 14px; margin-bottom: 0.5rem; }
+        .total-row { border-top: 2px solid #cbd5e1 !important; font-weight: bold; }
+        .net-pay-box { background-color: #fef08a; padding: 1rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; font-size: 18px; font-weight: bold; color: #854d0e; border: 1px solid #fde047; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div style="font-weight: 600;">Corporate Portal : พนักงาน</div>
+        <a class="logout-link" onclick="window.location.href='login.html'">ออกจากระบบ</a>
+    </nav>
+    
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 1.5rem; color: #475569;">
+            <h3 style="margin: 0; color: #0f172a;">ข้อมูลเงินเดือนประจำงวดที่ 1</h3>
+            <p style="margin: 5px 0 0 0; font-size: 14px;">ตั้งแต่วันที่ 26-มีนาคม-2023 ถึงวันที่ 25-เมษายน-2023</p>
+        </div>
+
+        <div class="card">
+            <div class="grid-4">
+                <div class="info-box"><div class="info-label">รหัสพนักงาน</div><div class="info-value">EMP-045</div></div>
+                <div class="info-box"><div class="info-label">ชื่อเล่น</div><div class="info-value">แดง</div></div>
+                <div class="info-box"><div class="info-label">ชื่อ - นามสกุล</div><div class="info-value">ประชา รักงาน</div></div>
+                <div class="info-box"><div class="info-label">อายุงานรวม</div><div class="info-value">2 ปี 3 เดือน</div></div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h4 class="section-title">สภาพการมาทำงาน</h4>
+                <div class="grid-2">
+                    <div>
+                        <div class="header-blue">ประจำงวดเงินเดือน</div>
+                        <table class="data-table">
+                            <tr><td>ลาอื่นๆ</td><td>0</td></tr>
+                            <tr><td>ลาป่วย</td><td>1</td></tr>
+                            <tr><td>ลากิจ</td><td>0</td></tr>
+                            <tr><td>ลาพักร้อน</td><td>0</td></tr>
+                        </table>
+                    </div>
+                    <div>
+                        <div class="header-blue">ประจำปีปัจจุบัน</div>
+                        <table class="data-table">
+                            <tr><td>ลาอื่นๆ</td><td>0</td></tr>
+                            <tr><td>ลาป่วย</td><td>1</td></tr>
+                            <tr><td>ลากิจ</td><td>0</td></tr>
+                            <tr><td>ลาพักร้อน</td><td>0</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4 class="section-title">สรุปรายได้และรายการหัก</h4>
+                <div class="grid-2">
+                    <div>
+                        <div class="header-green">ข้อมูลรายรับ</div>
+                        <table class="data-table">
+                            <tr><td>ฐานเงินเดือน</td><td>0.00</td></tr>
+                            <tr><td>รายได้อื่นๆ</td><td>2,000.00</td></tr>
+                            <tr class="total-row"><td style="color: #166534;">รวมรับ</td><td style="color: #166534;">2,000.00</td></tr>
+                        </table>
+                    </div>
+                    <div>
+                        <div class="header-red">ข้อมูลหัก</div>
+                        <table class="data-table">
+                            <tr><td>หักลา</td><td>0.00</td></tr>
+                            <tr><td>หักประกันสังคม</td><td>0.00</td></tr>
+                            <tr><td>หักอื่นๆ</td><td>250.00</td></tr>
+                            <tr class="total-row"><td style="color: #991b1b;">รวมหัก</td><td style="color: #991b1b;">250.00</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="net-pay-box">
+                    <span>ยอดรับสุทธิ</span>
+                    <span>1,750.00 ฿</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
