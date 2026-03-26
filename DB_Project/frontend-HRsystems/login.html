@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการข้อมูลพนักงาน (HRIS)</title>
+    <style>
+        /* ตั้งค่าฟอนต์และสีพื้นฐานสไตล์มินิมอล */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* โครงสร้างหลัก */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* กล่องเนื้อหา */
+        .card {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* หน้า Login */
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f1f5f9;
+        }
+        .login-box {
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+        .login-box h2 {
+            margin-bottom: 0.5rem;
+            color: #0f172a;
+        }
+        .login-box p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 2rem;
+        }
+
+        /* ฟอร์มและปุ่ม */
+        .form-group {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 0.5rem;
+            color: #475569;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0f172a;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0f172a;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #334155;
+        }
+        .btn-outline {
+            background-color: transparent;
+            color: #0f172a;
+            border: 1px solid #0f172a;
+        }
+        .btn-outline:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* แถบนำทาง (Navbar) */
+        .navbar {
+            background: #0f172a;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-brand {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .logout-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .logout-link:hover {
+            color: #ffffff;
+        }
+
+        /* ตารางข้อมูล (สำหรับ HR) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* ป้ายสถานะ */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-active { background-color: #dcfce7; color: #166534; }
+
+        /* ข้อมูลส่วนตัว (สำหรับ Employee) */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        .profile-label {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 0.25rem;
+        }
+        .profile-value {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loginView" class="login-wrapper">
+        <div class="card login-box">
+            <h2>Corporate Portal</h2>
+            <p>กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+            
+            <div class="form-group">
+                <label>รหัสพนักงาน / อีเมล</label>
+                <input type="text" placeholder="EMP001">
+            </div>
+            <div class="form-group">
+                <label>รหัสผ่าน</label>
+                <input type="password" placeholder="••••••••">
+            </div>
+            
+            <div class="form-group" style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed #cbd5e1;">
+                <label style="color: #2563eb;">*จำลองการเข้าสู่ระบบ (เลือกสิทธิ์)</label>
+                <select id="roleSimulation">
+                    <option value="employee">เข้าสู่ระบบในฐานะ: พนักงานทั่วไป</option>
+                    <option value="hr">เข้าสู่ระบบในฐานะ: ฝ่ายบุคคล (HR)</option>
+                </select>
+            </div>
+
+            <button onclick="handleLogin()">เข้าสู่ระบบ</button>
+        </div>
+    </div>
+
+    <div id="employeeView" style="display: none;">
+        <nav class="navbar">
+            <div class="navbar-brand">Corporate Portal : พนักงาน</div>
+            <a class="logout-link" onclick="handleLogout()">ออกจากระบบ</a>
+        </nav>
+        
+        <div class="container">
+            <h2 style="margin-bottom: 1.5rem;">ข้อมูลส่วนบุคคล</h2>
+            <div class="card">
+                <div class="profile-grid">
+                    <div>
+                        <div style="width: 120px; height: 120px; background: #e2e8f0; border-radius: 4px; margin-bottom: 1rem;"></div>
+                        <button class="btn-outline" style="width: 120px; padding: 8px;">แก้ไขข้อมูล</button>
+                    </div>
+                    <div>
+                        <div class="profile-label">ชื่อ - นามสกุล</div>
+                        <div class="profile-value">สมชาย ใจดี</div>
+
+                        <div class="profile-label">รหัสพนักงาน</div>
+                        <div class="profile-value">EMP-2023-045</div>
+
+                        <div class="profile-label">แผนก / ตำแหน่ง</div>
+                        <div class="profile-value">การตลาด / เจ้าหน้าที่การตลาดอาวุโส</div>
+
+                        <div class="profile-label">อีเมลติดต่อ</div>
+                        <div class="profile-value">somchai.j@company.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="hrView" style="display: none;">
+        <nav class="navbar">
+            <div class="navbar-brand">Corporate Portal : ฝ่ายบุคคล (HR)</div>
+            <a class="logout-link" onclick="handleLogout()">ออกจากระบบ</a>
+        </nav>
+        
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0;">ฐานข้อมูลพนักงานทั้งหมด</h2>
+                <input type="text" placeholder="ค้นหาชื่อ, รหัสพนักงาน..." style="width: 250px; margin: 0;">
+            </div>
+            
+            <div class="card" style="padding: 0;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>รหัสพนักงาน</th>
+                            <th>ชื่อ - นามสกุล</th>
+                            <th>แผนก</th>
+                            <th>ตำแหน่ง</th>
+                            <th>สถานะ</th>
+                            <th>จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>EMP-2021-001</td>
+                            <td>สมศรี รักงาน</td>
+                            <td>ฝ่ายบุคคล</td>
+                            <td>ผู้จัดการฝ่ายบุคคล</td>
+                            <td><span class="badge badge-active">ปฏิบัติงาน</span></td>
+                            <td><a href="#" style="color: #2563eb; text-decoration: none;">ดูประวัติ</a></td>
+                        </tr>
+                        <tr>
+                            <td>EMP-2023-045</td>
+                            <td>สมชาย ใจดี</td>
+                            <td>การตลาด</td>
+                            <td>เจ้าหน้าที่การตลาด</td>
+                            <td><span class="badge badge-active">ปฏิบัติงาน</span></td>
+                            <td><a href="#" style="color: #2563eb; text-decoration: none;">ดูประวัติ</a></td>
+                        </tr>
+                        <tr>
+                            <td>EMP-2024-089</td>
+                            <td>วิภาดา สุขใจ</td>
+                            <td>ไอที</td>
+                            <td>โปรแกรมเมอร์</td>
+                            <td><span class="badge badge-active">ปฏิบัติงาน</span></td>
+                            <td><a href="#" style="color: #2563eb; text-decoration: none;">ดูประวัติ</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ฟังก์ชันจำลองการ Login
+        function handleLogin() {
+            // ซ่อนหน้า Login
+            document.getElementById('loginView').style.display = 'none';
+            
+            // เช็คว่าผู้ใช้เลือกจำลองสิทธิ์เป็นอะไร
+            const selectedRole = document.getElementById('roleSimulation').value;
+            
+            if (selectedRole === 'employee') {
