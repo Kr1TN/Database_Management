@@ -10,7 +10,7 @@ app.use(express.static(path.join(__dirname)));
 
 const DB_CONFIG = {
   user: 'SYSTEM',
-  password: 'bigThogo_455',
+  password: 'qwerzaza963',
   connectString: 'localhost:1521/xe',
 };
 
