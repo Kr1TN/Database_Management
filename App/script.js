@@ -1,4 +1,4 @@
-const API = 'postgresql://postgres:bigThogo_455@db.pxtwpyqkvxtkmelzrraa.supabase.co:5432/postgres';
+const API = 'https://pxtwpyqkvxtkmelzrraa.supabase.co';
 
 document.addEventListener('DOMContentLoaded', () => {
   navigate('dashboard');
