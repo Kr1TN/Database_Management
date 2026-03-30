@@ -2,6 +2,10 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const path = require('path');
+const dns = require('dns'); // ✅ 1. เพิ่มบรรทัดนี้เข้ามา
+
+// ✅ 2. เพิ่มโค้ดบรรทัดนี้ เพื่อบังคับให้ใช้ IPv4 (ข้ามปัญหา ENETUNREACH IPv6)
+dns.setDefaultResultOrder('ipv4first');
 
 const app = express();
 app.use(cors());
@@ -12,9 +16,9 @@ app.use(express.static(path.join(__dirname)));
 // supabase.com → project → Settings → Database → Connection string → URI
 // หน้าตาแบบนี้: postgresql://postgres:[PASSWORD]@db.xxxx.supabase.co:5432/postgres
 const pool = new Pool({
-  // ⚠️ เปลี่ยน [YOUR-PASSWORD] เป็นรหัสผ่านของคุณ และเปลี่ยน db.xxxxxxxxxxxx... เป็น URL ของคุณ
-  connectionString: 'postgresql://postgres:bigThogo_455@db.pxtwpyqkvxtkmelzrraa.supabase.co:5432/postgres',
-  ssl: { rejectUnauthorized: false } // จำเป็นสำหรับ Supabase
+  // ✅ ต้องเป็นพอร์ต 6543 และใช้ลิงก์จากหน้า Transaction Pooler เท่านั้น
+  connectionString: 'postgresql://postgres.pxtwpyqkvxtkmelzrraa:bigThogo_455@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres',
+  ssl: { rejectUnauthorized: false }
 });
 
 async function query(sql, params = []) {
@@ -365,8 +369,10 @@ app.get('/api/salary/:salaryId/detail', async (req, res) => {
 });
 
 // ── START ────────────────────────────────────────────────────
-const PORT = 3000;
+// ✅ เปลี่ยนให้รับ Port จาก Render อัตโนมัติ (ถ้าทดสอบในเครื่องจะใช้ 3000)
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-  console.log(`🚀 Server: http://localhost:${PORT}`);
+  console.log(`🚀 Server is running on port ${PORT}`);
   console.log(`   App:    http://localhost:${PORT}/index-oracle.html`);
 });
