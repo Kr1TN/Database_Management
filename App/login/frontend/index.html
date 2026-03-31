@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rath Par Sum Hotel HR — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="script.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── Background ── -->
+<div class="bg">
+  <div class="bg-lines">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+      <!-- Art Deco geometric lines -->
+      <line x1="0" y1="400" x2="600" y2="0" stroke="#c8a96e" stroke-width="0.5"/>
+      <line x1="0" y1="500" x2="700" y2="0" stroke="#c8a96e" stroke-width="0.3"/>
+      <line x1="0" y1="300" x2="500" y2="0" stroke="#c8a96e" stroke-width="0.3"/>
+      <line x1="200" y1="800" x2="900" y2="0" stroke="#c8a96e" stroke-width="0.4"/>
+      <line x1="0" y1="600" x2="800" y2="0" stroke="#c8a96e" stroke-width="0.2"/>
+      <!-- Horizontal rule -->
+      <line x1="0" y1="790" x2="1200" y2="790" stroke="#c8a96e" stroke-width="0.4"/>
+      <line x1="0" y1="783" x2="1200" y2="783" stroke="#c8a96e" stroke-width="0.15"/>
+      <!-- Corner ornament -->
+      <rect x="30" y="30" width="80" height="80" fill="none" stroke="#c8a96e" stroke-width="0.4"/>
+      <rect x="40" y="40" width="60" height="60" fill="none" stroke="#c8a96e" stroke-width="0.2"/>
+      <line x1="30" y1="70" x2="110" y2="70" stroke="#c8a96e" stroke-width="0.3"/>
+      <line x1="70" y1="30" x2="70" y2="110" stroke="#c8a96e" stroke-width="0.3"/>
+    </svg>
+  </div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<!-- ── Success overlay ── -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">✓</div>
+  <div class="success-text">ยินดีต้อนรับ</div>
+  <div class="success-sub" id="successSub">กำลังเข้าสู่ระบบ...</div>
+</div>
+
+<!-- ── Main layout ── -->
+<div class="layout">
+
+  <!-- Left branding panel -->
+  <div class="left-panel">
+    <div class="hotel-badge">
+      <div class="dot"></div>
+      <span>Hotel Management System</span>
+    </div>
+
+    <h1 class="hotel-name">Rath Pa<br><em>Sum</em></h1>
+    <p class="hotel-sub">Luxury Collection · Chiang Rai</p>
+
+    <div class="divider"></div>
+
+    <div class="features">
+      <div class="feature-item">
+        <div class="feature-icon">👥</div>
+        <div class="feature-text">
+          <strong>จัดการพนักงาน</strong>
+          ข้อมูลพนักงาน, ตำแหน่ง และแผนกครบถ้วน
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🕐</div>
+        <div class="feature-text">
+          <strong>บันทึกเวลา & กะ</strong>
+          กะเช้า, เย็น, ดึก — คำนวณ OT อัตโนมัติ
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">💰</div>
+        <div class="feature-text">
+          <strong>ระบบเงินเดือน</strong>
+          SQL คำนวณ OT, ค่ากะดึก, Service Charge
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-text">
+          <strong>PostgreSQL Database</strong>
+          เชื่อมตรงกับ Oracle — ปลอดภัยทุกธุรกรรม
+        </div>
+      </div>
+    </div>
+
+    <div class="left-footer">
+      <p>"Excellence in every detail, from rooms to records."</p>
+    </div>
+  </div>
+
+  <!-- Right login panel -->
+  <div class="right-panel">
+    <div class="login-card">
+
+      <div class="card-header">
+        <div class="card-eyebrow">HR Administration</div>
+        <div class="card-title">เข้าสู่<span>ระบบ</span></div>
+      </div>
+
+      <!-- Role selector -->
+      <div style="margin-bottom:20px">
+        <label class="form-label">เข้าใช้งานในฐานะ</label>
+        <div class="role-grid">
+          <label class="role-option">
+            <input type="radio" name="role" value="admin" checked>
+            <div class="role-label">
+              <div class="role-icon">👑</div>
+              <div class="role-name">HR Admin</div>
+            </div>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="role" value="manager">
+            <div class="role-label">
+              <div class="role-icon">🏨</div>
+              <div class="role-name">Department Mgr</div>
+            </div>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="role" value="payroll">
+            <div class="role-label">
+              <div class="role-icon">💼</div>
+              <div class="role-name">Payroll Staff</div>
+            </div>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="role" value="employee">
+            <div class="role-label">
+              <div class="role-icon">👤</div>
+              <div class="role-name">พนักงาน</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Username -->
+      <div class="form-group">
+        <label class="form-label">ชื่อผู้ใช้</label>
+        <div class="input-wrapper">
+          <span class="input-icon">👤</span>
+          <input class="form-input" type="text" id="username" placeholder="กรอก Username" autocomplete="username">
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label">รหัสผ่าน</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔑</span>
+          <input class="form-input" type="password" id="password" placeholder="กรอก Password" autocomplete="current-password"
+            onkeydown="if(event.key==='Enter') doLogin()">
+        </div>
+      </div>
+
+      <!-- Login button -->
+      <button class="btn-login" id="loginBtn" onclick="doLogin()">
+        <span class="btn-text">เข้าสู่ระบบ →</span>
+        <div class="btn-spinner"></div>
+      </button>
+
+      <!-- Error message -->
+      <div class="error-msg" id="errorMsg">
+        <span>⚠️</span>
+        <span id="errorText">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</span>
+      </div>
+
+      <!-- Demo hint -->
+      <div class="demo-hint">
+        <strong>Demo:</strong> username <strong>admin</strong> / password <strong>1234</strong>
+        <br>หรือ username <strong>hr</strong> / password <strong>hotel</strong>
+      </div>
+
+      <div class="card-footer">
+        <div class="card-footer-left">© 2024 Rath Pa Sum Hotel</div>
+        <div class="version-tag">v2.4.1</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

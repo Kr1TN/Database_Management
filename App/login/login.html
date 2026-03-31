@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rath Pa Sum Hotel HR — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #c8a96e;
+    --gold-light: #e2c898;
+    --gold-dark: #a0804a;
+    --ink: #1a1714;
+    --ink2: #2d2820;
+    --cream: #f7f3ee;
+    --muted: #8a7e72;
+    --border: rgba(200,169,110,0.25);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--ink);
+    overflow: hidden;
+  }
+
+  /* ─── BACKGROUND CANVAS ─────────────────────────────── */
+  .bg {
+    position: fixed; inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 70% 50%, #2a2118 0%, transparent 60%),
+      radial-gradient(ellipse 50% 80% at 10% 90%, #1f1a10 0%, transparent 50%),
+      linear-gradient(135deg, #0e0c09 0%, #1a1510 40%, #0d0b08 100%);
+    overflow: hidden;
+  }
+
+  /* Animated grain overlay */
+  .bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    pointer-events: none;
+  }
+
+  /* Gold geometric lines */
+  .bg-lines {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .bg-lines svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    opacity: 0.12;
+  }
+
+  /* Glowing orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: float 8s ease-in-out infinite;
+  }
+  .orb1 { width: 500px; height: 500px; background: rgba(200,169,110,0.08); top: -150px; right: -100px; animation-delay: 0s; }
+  .orb2 { width: 300px; height: 300px; background: rgba(160,120,50,0.06); bottom: 50px; left: 20%; animation-delay: -3s; }
+  .orb3 { width: 200px; height: 200px; background: rgba(200,169,110,0.05); top: 40%; left: 5%; animation-delay: -6s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-30px); }
+  }
+
+  /* ─── LAYOUT ─────────────────────────────────────────── */
+  .layout {
+    position: relative; z-index: 1;
+    display: flex;
+    height: 100vh;
+  }
+
+  /* Left panel — branding */
+  .left-panel {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 64px;
+    position: relative;
+  }
+
+  .hotel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(200,169,110,0.1);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 8px 18px;
+    margin-bottom: 40px;
+    width: fit-content;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hotel-badge span { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; }
+  .hotel-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .hotel-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--cream);
+    margin-bottom: 12px;
+    animation: fadeUp 0.8s ease 0.1s both;
+  }
+  .hotel-name em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hotel-sub {
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  .divider {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .feature-icon {
+    width: 36px; height: 36px;
+    background: rgba(200,169,110,0.1);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .feature-text { font-size: 13px; color: #6b6058; line-height: 1.4; }
+  .feature-text strong { display: block; font-size: 14px; color: #9a8e82; font-weight: 500; margin-bottom: 1px; }
+
+  /* Bottom tagline */
+  .left-footer {
+    position: absolute;
+    bottom: 48px; left: 64px;
+    animation: fadeUp 0.8s ease 0.5s both;
+  }
+  .left-footer p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: #4a4038;
+  }
+
+  /* ─── RIGHT PANEL — login form ───────────────────────── */
+  .right-panel {
+    width: 440px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    position: relative;
+  }
+
+  /* Glass card */
+  .login-card {
+    width: 100%;
+    background: rgba(26,23,20,0.7);
+    border: 1px solid rgba(200,169,110,0.2);
+    border-radius: 24px;
+    padding: 44px 40px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.03) inset,
+      0 40px 80px rgba(0,0,0,0.5),
+      0 0 60px rgba(200,169,110,0.04);
+    animation: cardIn 1s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .card-header { margin-bottom: 36px; }
+  .card-eyebrow {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 8px;
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px; font-weight: 500;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+  .card-title span { color: var(--gold); }
+
+  /* Form */
+  .form-group { margin-bottom: 20px; position: relative; }
+
+  .form-label {
+    display: block;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+  .input-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 15px; opacity: 0.5; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .form-input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(200,169,110,0.15);
+    border-radius: 12px;
+    padding: 13px 14px 13px 42px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--cream);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  }
+  .form-input::placeholder { color: #4a4038; }
+  .form-input:focus {
+    border-color: rgba(200,169,110,0.5);
+    background: rgba(200,169,110,0.05);
+    box-shadow: 0 0 0 3px rgba(200,169,110,0.08);
+  }
+  .form-input:focus + .focus-line { transform: scaleX(1); }
+
+  /* Role selector */
+  .role-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .role-option {
+    position: relative;
+    cursor: pointer;
+  }
+  .role-option input { position: absolute; opacity: 0; pointer-events: none; }
+  .role-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 10px;
+    border: 1px solid rgba(200,169,110,0.12);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.02);
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .role-label .role-icon { font-size: 20px; }
+  .role-label .role-name { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .role-option input:checked + .role-label {
+    border-color: rgba(200,169,110,0.5);
+    background: rgba(200,169,110,0.08);
+    box-shadow: 0 0 16px rgba(200,169,110,0.1);
+  }
+  .role-option input:checked + .role-label .role-name { color: var(--gold); }
+
+  /* Login button */
+  .btn-login {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-light) 100%);
+    background-size: 200% 200%;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .btn-login::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn-login:hover { background-position: right; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(200,169,110,0.3); }
+  .btn-login:hover::before { opacity: 1; }
+  .btn-login:active { transform: translateY(0); }
+  .btn-login.loading { pointer-events: none; }
+  .btn-login .btn-text { transition: opacity 0.2s; }
+  .btn-login.loading .btn-text { opacity: 0; }
+  .btn-spinner {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 18px; height: 18px;
+    border: 2px solid rgba(26,23,20,0.3);
+    border-top-color: var(--ink);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  .btn-login.loading .btn-spinner { display: block; }
+  @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+  /* Error message */
+  .error-msg {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(220,60,60,0.1);
+    border: 1px solid rgba(220,60,60,0.25);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #e07070;
+    margin-top: 16px;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+  .error-msg.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  /* Card footer */
+  .card-footer {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(200,169,110,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-footer-left { font-size: 12px; color: #4a4038; }
+  .version-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #3a332c;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 6px;
+    padding: 4px 8px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Demo credentials hint */
+  .demo-hint {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(200,169,110,0.05);
+    border: 1px dashed rgba(200,169,110,0.2);
+    border-radius: 10px;
+    font-size: 11.5px;
+    color: #5a5048;
+    line-height: 1.6;
+  }
+  .demo-hint strong { color: #7a6e60; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive */
+  @media (max-width: 800px) {
+    .left-panel { display: none; }
+    .right-panel { width: 100%; padding: 24px; }
+    .login-card { padding: 32px 28px; }
+  }
+
+  /* Success state */
+  .success-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 16px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.5s;
+  }
+  .success-overlay.show { opacity: 1; pointer-events: auto; }
+  .success-icon {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes popIn { from{ transform:scale(0.5); opacity:0 } to{ transform:scale(1); opacity:1 } }
+  .success-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; color: var(--cream);
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+  .success-sub {
+    font-size: 13px; color: var(--muted);
+    animation: fadeUp 0.5s ease 0.35s both;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Background ── -->
+<div class="bg">
+  <div class="bg-lines">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+      <!-- Art Deco geometric lines -->
+      <line x1="0" y1="400" x2="600" y2="0" stroke="#c8a96e" stroke-width="0.5"/>
+      <line x1="0" y1="500" x2="700" y2="0" stroke="#c8a96e" stroke-width="0.3"/>
+      <line x1="0" y1="300" x2="500" y2="0" stroke="#c8a96e" stroke-width="0.3"/>
+      <line x1="200" y1="800" x2="900" y2="0" stroke="#c8a96e" stroke-width="0.4"/>
+      <line x1="0" y1="600" x2="800" y2="0" stroke="#c8a96e" stroke-width="0.2"/>
+      <!-- Horizontal rule -->
+      <line x1="0" y1="790" x2="1200" y2="790" stroke="#c8a96e" stroke-width="0.4"/>
+      <line x1="0" y1="783" x2="1200" y2="783" stroke="#c8a96e" stroke-width="0.15"/>
+      <!-- Corner ornament -->
+      <rect x="30" y="30" width="80" height="80" fill="none" stroke="#c8a96e" stroke-width="0.4"/>
+      <rect x="40" y="40" width="60" height="60" fill="none" stroke="#c8a96e" stroke-width="0.2"/>
+      <line x1="30" y1="70" x2="110" y2="70" stroke="#c8a96e" stroke-width="0.3"/>
+      <line x1="70" y1="30" x2="70" y2="110" stroke="#c8a96e" stroke-width="0.3"/>
+    </svg>
+  </div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<!-- ── Success overlay ── -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">✓</div>
+  <div class="success-text">ยินดีต้อนรับ</div>
+  <div class="success-sub" id="successSub">กำลังเข้าสู่ระบบ...</div>
+</div>
+
+<!-- ── Main layout ── -->
+<div class="layout">
+
+  <!-- Left branding panel -->
+  <div class="left-panel">
+    <div class="hotel-badge">
+      <div class="dot"></div>
+      <span>Hotel Management System</span>
+    </div>
+
+    <h1 class="hotel-name">Rath Par<br><em>Sum</em></h1>
+    <p class="hotel-sub">Luxury Collection · Chiang Rai</p>
+
+    <div class="divider"></div>
+
+    <div class="features">
+      <div class="feature-item">
+        <div class="feature-icon">👥</div>
+        <div class="feature-text">
+          <strong>จัดการพนักงาน</strong>
+          ข้อมูลพนักงาน, ตำแหน่ง และแผนกครบถ้วน
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🕐</div>
+        <div class="feature-text">
+          <strong>บันทึกเวลา & กะ</strong>
+          กะเช้า, เย็น, ดึก — คำนวณ OT อัตโนมัติ
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">💰</div>
+        <div class="feature-text">
+          <strong>ระบบเงินเดือน</strong>
+          SQL คำนวณ OT, ค่ากะดึก, Service Charge
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-text">
+          <strong>PostgreSQL Database</strong>
+          เชื่อมตรงกับ Oracle — ปลอดภัยทุกธุรกรรม
+        </div>
+      </div>
+    </div>
+
+    <div class="left-footer">
+      <p>"Excellence in every detail, from rooms to records."</p>
+    </div>
+  </div>
+
+  <!-- Right login panel -->
+  <div class="right-panel">
+    <div class="login-card">
+
+      <div class="card-header">
+        <div class="card-eyebrow">HR Administration</div>
+        <div class="card-title">เข้าสู่<span>ระบบ</span></div>
+      </div>
+
+      <!-- Role selector -->
+      <div style="margin-bottom:20px">
+        <label class="form-label">เข้าใช้งานในฐานะ</label>
+        <div class="role-grid">
+          <label class="role-option">
+            <input type="radio" name="role" value="admin" checked>
+            <div class="role-label">
+              <div class="role-icon">👑</div>
+              <div class="role-name">HR Admin</div>
+            </div>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="role" value="manager">
+            <div class="role-label">
+              <div class="role-icon">🏨</div>
+              <div class="role-name">Department Mgr</div>
+            </div>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="role" value="payroll">
+            <div class="role-label">
+              <div class="role-icon">💼</div>
+              <div class="role-name">Payroll Staff</div>
+            </div>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="role" value="employee">
+            <div class="role-label">
+              <div class="role-icon">👤</div>
+              <div class="role-name">พนักงาน</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Username -->
+      <div class="form-group">
+        <label class="form-label">ชื่อผู้ใช้</label>
+        <div class="input-wrapper">
+          <span class="input-icon">👤</span>
+          <input class="form-input" type="text" id="username" placeholder="กรอก Username" autocomplete="username">
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label">รหัสผ่าน</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔑</span>
+          <input class="form-input" type="password" id="password" placeholder="กรอก Password" autocomplete="current-password"
+            onkeydown="if(event.key==='Enter') doLogin()">
+        </div>
+      </div>
+
+      <!-- Login button -->
+      <button class="btn-login" id="loginBtn" onclick="doLogin()">
+        <span class="btn-text">เข้าสู่ระบบ →</span>
+        <div class="btn-spinner"></div>
+      </button>
+
+      <!-- Error message -->
+      <div class="error-msg" id="errorMsg">
+        <span>⚠️</span>
+        <span id="errorText">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</span>
+      </div>
+
+      <!-- Demo hint -->
+      <div class="demo-hint">
+        <strong>Demo:</strong> username <strong>admin</strong> / password <strong>1234</strong>
+        <br>หรือ username <strong>hr</strong> / password <strong>hotel</strong>
+      </div>
+
+      <div class="card-footer">
+        <div class="card-footer-left">© 2024 Rath Pa Sum Hotel</div>
+        <div class="version-tag">v2.4.1</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Demo credentials (replace with real API auth)
+  const DEMO_USERS = {
+    'admin':   { password: '1234',  role: 'admin',    name: 'Admin HR' },
+    'hr':      { password: 'hotel', role: 'admin',    name: 'คุณสมศักดิ์' },
+    'manager': { password: '1234',  role: 'manager',  name: 'คุณวิภา' },
+    'payroll': { password: '1234',  role: 'payroll',  name: 'คุณนภา' },
+  };
+
+  function doLogin() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const role     = document.querySelector('input[name="role"]:checked').value;
+    const btn      = document.getElementById('loginBtn');
+    const errMsg   = document.getElementById('errorMsg');
+
+    // Hide old error
+    errMsg.classList.remove('show');
+
+    if (!username || !password) {
+      showError('กรุณากรอกชื่อผู้ใช้และรหัสผ่าน');
+      return;
+    }
+
+    // Loading state
+    btn.classList.add('loading');
+
+    // Simulate API call delay
+    setTimeout(() => {
+      const user = DEMO_USERS[username];
+
+      if (user && user.password === password) {
+        // Store session (replace with real token)
+        sessionStorage.setItem('hr_user', JSON.stringify({
+          username, name: user.name, role
+        }));
+        showSuccess(user.name);
+      } else {
+        btn.classList.remove('loading');
+        showError('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+        // Shake animation
+        const card = document.querySelector('.login-card');
+        card.style.animation = 'shake 0.4s ease';
+        setTimeout(() => card.style.animation = '', 400);
+      }
+    }, 1200);
+  }
+
+  function showError(msg) {
+    document.getElementById('errorText').textContent = msg;
+    document.getElementById('errorMsg').classList.add('show');
+  }
+
+  function showSuccess(name) {
+    const overlay = document.getElementById('successOverlay');
+    document.getElementById('successSub').textContent = `ยินดีต้อนรับ, ${name} — กำลังโหลดระบบ...`;
+    overlay.classList.add('show');
+    // Redirect after 1.8s
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 1800);
+  }
+
+  // Add shake keyframe dynamically
+  const style = document.createElement('style');
+  style.textContent = `@keyframes shake {
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-8px)}
+    40%{transform:translateX(8px)}
+    60%{transform:translateX(-5px)}
+    80%{transform:translateX(5px)}
+  }`;
+  document.head.appendChild(style);
+</script>
+</body>
+</html>
