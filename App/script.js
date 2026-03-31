@@ -457,7 +457,7 @@ async function showSalaryDetail(salaryId) {
     const s = d.salary;
     document.getElementById('salDetailBody').innerHTML = `
       <div style="text-align:center;margin-bottom:16px">
-        <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--gold2)">Grand Palace Hotel</div>
+        <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--gold2)">Rath Par Sum Hotel</div>
         <div style="font-size:12px;color:var(--muted);margin-top:4px">${s.EMP_NAME} (${s.EMPLOYEE_ID})</div>
         <div style="font-size:12px;color:var(--muted)">${s.DEPARTMENT_NAME} | ${s.POSITION_NAME || '-'}</div>
         <div style="font-size:12px;color:var(--muted)">เดือน ${s.SALARY_MONTH}/${s.SALARY_YEAR}</div>
