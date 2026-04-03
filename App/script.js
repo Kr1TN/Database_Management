@@ -1,8 +1,111 @@
+// =========================================================================
+// ส่วนที่ 1: ระบบ Login (Authentication)
+// =========================================================================
+
+// Demo credentials (replace with real API auth)
+const DEMO_USERS = {
+  'admin':   { password: '1234',  role: 'admin',    name: 'Admin HR' },
+  'hr':      { password: 'hotel', role: 'admin',    name: 'คุณสมศักดิ์' },
+  'manager': { password: '1234',  role: 'manager',  name: 'คุณวิภา' },
+  'payroll': { password: '1234',  role: 'payroll',  name: 'คุณนภา' },
+};
+
+function doLogin() {
+  const username = document.getElementById('username')?.value.trim();
+  const password = document.getElementById('password')?.value;
+  const roleEl   = document.querySelector('input[name="role"]:checked');
+  const role     = roleEl ? roleEl.value : '';
+  const btn      = document.getElementById('loginBtn');
+  const errMsg   = document.getElementById('errorMsg');
+
+  // Hide old error
+  if(errMsg) errMsg.classList.remove('show');
+
+  if (!username || !password) {
+    showError('กรุณากรอกชื่อผู้ใช้และรหัสผ่าน');
+    return;
+  }
+
+  // Loading state
+  if(btn) btn.classList.add('loading');
+
+  // Simulate API call delay
+  setTimeout(() => {
+    const user = DEMO_USERS[username];
+
+    if (user && user.password === password) {
+      // Store session (replace with real token)
+      sessionStorage.setItem('hr_user', JSON.stringify({
+        username, name: user.name, role
+      }));
+      showSuccess(user.name);
+    } else {
+      if(btn) btn.classList.remove('loading');
+      showError('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+      // Shake animation
+      const card = document.querySelector('.login-card');
+      if (card) {
+        card.style.animation = 'shake 0.4s ease';
+        setTimeout(() => card.style.animation = '', 400);
+      }
+    }
+  }, 1200);
+}
+
+function showError(msg) {
+  const errorText = document.getElementById('errorText');
+  const errorMsg = document.getElementById('errorMsg');
+  if(errorText) errorText.textContent = msg;
+  if(errorMsg) errorMsg.classList.add('show');
+}
+
+function showSuccess(name) {
+  const overlay = document.getElementById('successOverlay');
+  const successSub = document.getElementById('successSub');
+  if(successSub) successSub.textContent = `ยินดีต้อนรับ, ${name} — กำลังโหลดระบบ...`;
+  if(overlay) overlay.classList.add('show');
+  
+  // Redirect after 1.8s
+  setTimeout(() => {
+    window.location.href = 'index-oracle.html';
+  }, 1800);
+}
+
+// Add shake keyframe dynamically
+const style = document.createElement('style');
+style.textContent = `@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)}
+  60%{transform:translateX(-5px)}
+  80%{transform:translateX(5px)}
+}`;
+document.head.appendChild(style);
+
+// =========================================================================
+// ส่วนที่ 2: ระบบจัดการ HR และ Database
+// =========================================================================
+
+// ✅ แก้ไข: ชี้ไปที่ Localhost ตอนทดสอบ
 const API = 'https://test-systemdb.onrender.com/api';
 
 document.addEventListener('DOMContentLoaded', () => {
-  navigate('dashboard');
-  checkApiStatus();
+  // ตรวจสอบว่าอยู่หน้า Login หรือ Dashboard
+  const isLoginPage = document.getElementById('loginBtn') !== null;
+  const isMainPage = document.getElementById('apiDot') !== null;
+
+  if (isMainPage) {
+    // ✅ ระบบป้องกัน: ถ้ายังไม่ได้ Login ให้เด้งกลับไปหน้า login.html ทันที!
+    const userSession = sessionStorage.getItem('hr_user');
+    if (!userSession) {
+      window.location.href = 'login.html';
+      return; 
+    }
+
+    // ถ้า Login แล้ว ค่อยโหลดข้อมูล
+    navigate('dashboard');
+    checkApiStatus();
+  }
 });
 
 async function checkApiStatus() {
@@ -76,10 +179,10 @@ async function loadDashboard() {
       fetch(`${API}/employees`).then(r => r.json()),
     ]);
     document.getElementById('dashStats').innerHTML = `
-      <div class="stat-card"><div class="stat-label">พนักงานทั้งหมด</div><div class="stat-value">${stats.totalEmployees}</div><div class="stat-sub">${stats.activeEmployees} Active</div></div>
-      <div class="stat-card"><div class="stat-label">แผนกทั้งหมด</div><div class="stat-value">${stats.departments}</div><div class="stat-sub">5 แผนกหลัก</div></div>
-      <div class="stat-card"><div class="stat-label">บันทึกกะดึก</div><div class="stat-value">${stats.nightShiftRecords}</div><div class="stat-sub">+30% Premium</div></div>
-      <div class="stat-card"><div class="stat-label">บันทึกเวลาทั้งหมด</div><div class="stat-value">${stats.attendanceRecords}</div><div class="stat-sub">รายการ</div></div>
+      <div class="stat-card"><div class="stat-label">พนักงานทั้งหมด</div><div class="stat-value">${stats.totalEmployees || 0}</div><div class="stat-sub">${stats.activeEmployees || 0} Active</div></div>
+      <div class="stat-card"><div class="stat-label">แผนกทั้งหมด</div><div class="stat-value">${stats.departments || 0}</div><div class="stat-sub">5 แผนกหลัก</div></div>
+      <div class="stat-card"><div class="stat-label">บันทึกกะดึก</div><div class="stat-value">${stats.nightShiftRecords || 0}</div><div class="stat-sub">+30% Premium</div></div>
+      <div class="stat-card"><div class="stat-label">บันทึกเวลาทั้งหมด</div><div class="stat-value">${stats.attendanceRecords || 0}</div><div class="stat-sub">รายการ</div></div>
     `;
     const tbody = document.getElementById('dashRecentBody');
     tbody.innerHTML = (Array.isArray(employees) ? employees.slice(0, 5) : []).map(e => `
@@ -146,7 +249,6 @@ function filterEmp(dept, btn) {
   loadEmployees();
 }
 
-// ✅ เพิ่มดึง shifts มาใส่ dropdown กะในฟอร์มพนักงานด้วย
 async function loadDropdowns() {
   try {
     const [depts, positions, shifts] = await Promise.all([
@@ -168,7 +270,6 @@ async function loadDropdowns() {
     const pSel = document.getElementById('empPositionId');
     if (pSel) pSel.onchange = () => updateShiftAndSalaryInfo();
 
-    // ✅ ใส่ข้อมูลกะลง dropdown ในฟอร์มพนักงาน
     const sSel = document.getElementById('empShiftId');
     if (sSel) {
       sSel.innerHTML = shifts.map(s => {
@@ -421,7 +522,6 @@ async function deleteAttendance(id) {
 }
 
 // ─── SALARY ──────────────────────────────────────────────────
-// ✅ ดึงปีจาก dropdown salaryYear ที่เพิ่มใน HTML
 async function loadSalary() {
   const month = document.getElementById('salaryMonth').value;
   const year  = document.getElementById('salaryYear').value;
